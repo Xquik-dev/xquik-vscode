@@ -63,7 +63,9 @@ The hosted server lives at `https://xquik.com/mcp`. It gives your AI assistant X
 
 The extension adds the server for you. Start it from the MCP server list.
 
-The server uses your API key after you sign in. Without a key, the editor runs Xquik OAuth.
+The server uses your API key after you sign in. Signing in or out restarts the server.
+
+VSCodium hides MCP servers until you turn on AI features. After you sign in, select **Turn On AI Features**. You can also set `chat.disableAIFeatures` to `false` in Settings.
 
 ### Cursor
 

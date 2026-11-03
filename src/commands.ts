@@ -68,6 +68,32 @@ const COPY_CONFIG_OFFER: Offer = {
     vscode.commands.executeCommand('xquik.copyMcpConfig'),
 };
 
+const TURN_ON_AI_OFFER: Offer = {
+  label: 'Turn On AI Features',
+  run: async (): Promise<unknown> =>
+    vscode.workspace
+      .getConfiguration('chat')
+      .update('disableAIFeatures', false, vscode.ConfigurationTarget.Global),
+};
+
+function signedInStep(mcpHost: McpHost['kind']): {
+  readonly message: string;
+  readonly offer?: Offer;
+} {
+  if (mcpHost === 'manual')
+    return { message: 'Signed in to Xquik.', offer: COPY_CONFIG_OFFER };
+  // VSCodium turns AI features off by default, which hides every MCP server.
+  const aiOff =
+    vscode.workspace.getConfiguration('chat').get('disableAIFeatures') === true;
+  return aiOff
+    ? {
+        message:
+          'Signed in to Xquik. Turn on AI features to use the MCP server.',
+        offer: TURN_ON_AI_OFFER,
+      }
+    : { message: 'Signed in to Xquik.' };
+}
+
 const FAILURE_OFFERS: ReadonlyMap<number, Offer> = new Map([
   [UNAUTHORIZED, SIGN_IN_OFFER],
   [PAYMENT_REQUIRED, ADD_CREDITS_OFFER],
@@ -157,11 +183,8 @@ async function signIn(
     return undefined;
   }
   await keys.write(key);
-  notify(
-    vscode.window.showInformationMessage,
-    'Signed in to Xquik.',
-    mcpHost === 'manual' ? COPY_CONFIG_OFFER : undefined,
-  );
+  const next = signedInStep(mcpHost);
+  notify(vscode.window.showInformationMessage, next.message, next.offer);
   return key;
 }
 
