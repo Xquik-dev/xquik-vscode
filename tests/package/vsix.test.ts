@@ -3,7 +3,6 @@
 
 import { expect, it } from 'bun:test';
 import { strFromU8, unzipSync } from 'fflate';
-import { execFileSync } from 'node:child_process';
 import { readFileSync, statSync } from 'node:fs';
 import { z } from 'zod';
 
@@ -25,22 +24,6 @@ const texts = Object.entries(entries)
 // The word stays split because it may appear nowhere in this repository.
 const BANNED_WORDING = new RegExp(['scr', 'ap(?:e|ing)'].join(''), 'iu');
 const REAL_LOOKING_KEY = /xq_[0-9A-Za-z]{16,}/u;
-
-it('vsix > vsce packs exactly the 6 allowed files', (): void => {
-  const listed = execFileSync(
-    'npx',
-    ['--no-install', 'vsce', 'ls', '--no-dependencies'],
-    { encoding: 'utf8' },
-  );
-  expect(listed.trim().split('\n').toSorted()).toStrictEqual([
-    'CHANGELOG.md',
-    'LICENSE',
-    'README.md',
-    'dist/extension.js',
-    'media/icon.png',
-    'package.json',
-  ]);
-});
 
 it('vsix > the package holds only those files & its manifests', (): void => {
   expect(Object.keys(entries).toSorted()).toStrictEqual([

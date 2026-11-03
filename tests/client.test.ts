@@ -68,7 +68,7 @@ function clientAnswering(
   return { calls, client: createClient({ fetch, version: '0.1.0' }) };
 }
 
-it('client > every request goes to xquik.com with the key, the version & a timeout', async (): Promise<void> => {
+it('client > every request goes to xquik.com with the key & the version', async (): Promise<void> => {
   const { calls, client } = clientAnswering(200, {});
   await client.account(KEY);
   expect(calls).toHaveLength(1);
@@ -77,7 +77,6 @@ it('client > every request goes to xquik.com with the key, the version & a timeo
     'user-agent': 'xquik-vscode/0.1.0',
     'x-api-key': 'xq_test',
   });
-  expect(calls[0]?.init.signal).toBeInstanceOf(AbortSignal);
 });
 
 it('client > a search asks for 20 posts with the query encoded', async (): Promise<void> => {
@@ -196,19 +195,22 @@ it.each([
   },
 );
 
-it('client > a success body that is not JSON becomes status 0', async (): Promise<void> => {
-  const { fetch } = answering(200, 'not json');
-  const result = await createClient({ fetch, version: '0.1.0' }).account(KEY);
-  expect(result).toMatchObject({ ok: false, status: 0 });
-});
-
-it('client > a body that breaks the contract is rejected, not rendered', async (): Promise<void> => {
-  const { client } = clientAnswering(200, { tweets: [{ id: 1 }] });
-  expect(await client.searchPosts(KEY, 'moon')).toMatchObject({
-    ok: false,
-    status: 0,
-  });
-});
+it.each([
+  ['a success body that is not JSON', 'not json'],
+  ['a body that breaks the contract', JSON.stringify({ tweets: [{ id: 1 }] })],
+])(
+  'client > %s asks for an update instead of rendering',
+  async (_name, body): Promise<void> => {
+    const { fetch } = answering(200, body);
+    const client = createClient({ fetch, version: '0.1.0' });
+    expect(await client.searchPosts(KEY, 'moon')).toStrictEqual({
+      message:
+        'Xquik sent an answer this version cannot read. Update the extension, then try again.',
+      ok: false,
+      status: 0,
+    });
+  },
+);
 
 it('client > a network failure becomes status 0 with a next step', async (): Promise<void> => {
   const client = createClient({

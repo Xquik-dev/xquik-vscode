@@ -37,9 +37,9 @@ it('parseApiKey > a pasted key survives padding & a Bearer prefix', (): void => 
       fc.constantFrom('', 'Bearer ', 'bearer ', 'Bearer   '),
       fc.constantFrom('', ' ', '\n'),
       (body, before, prefix, after) => {
-        expect(parseApiKey(`${before}${prefix}xq_${body}${after}`)).toBe(
-          API_KEY.parse(`xq_${body}`),
-        );
+        expect<string | undefined>(
+          parseApiKey(`${before}${prefix}xq_${body}${after}`),
+        ).toBe(`xq_${body}`);
       },
     ),
   );
@@ -82,13 +82,13 @@ it('parseApiKey > a missing value is no key', (): void => {
 it('ApiKey > a plain string is not a key until it is parsed', (): void => {
   // @ts-expect-error A key must come through parseApiKey.
   const key: ApiKey = 'xq_plain';
-  expect(parseApiKey(key)).toBe(API_KEY.parse('xq_plain'));
+  expect<string | undefined>(parseApiKey(key)).toBe('xq_plain');
 });
 
 it('key store > a written key reads back & clearing removes it', async (): Promise<void> => {
   const keys = createKeyStore(memorySecrets());
   await keys.write(API_KEY.parse('xq_stored'));
-  expect(await keys.read()).toBe(API_KEY.parse('xq_stored'));
+  expect<string | undefined>(await keys.read()).toBe('xq_stored');
   await keys.clear();
   expect(await keys.read()).toBeUndefined();
 });
