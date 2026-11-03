@@ -104,7 +104,8 @@ Reads start at $0.00015 per post and per profile. A search returns up to 20 post
 
 - A search or profile lookup needs an API key and credits.
 - A search opens 1 page of up to 20 posts.
-- This extension only reads X data. It never posts, likes or follows.
+- The commands only read X data. They never post, like or follow.
+- The MCP server can also act through X accounts you connect on xquik.com.
 
 ## Privacy
 
