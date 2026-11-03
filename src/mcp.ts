@@ -4,9 +4,11 @@
 import type { ApiKey } from './apiKey';
 
 const MCP_URL = 'https://xquik.com/mcp';
-const MCP_CONFIG = JSON.stringify({
-  mcpServers: { xquik: { serverUrl: MCP_URL } },
-});
+const MCP_CONFIG = JSON.stringify(
+  { mcpServers: { xquik: { serverUrl: MCP_URL } } },
+  undefined,
+  2,
+);
 const SERVER_NAME = 'xquik';
 
 // Windsurf is now Devin Desktop, whose Cascade reads mcp_config.json and ignores vscode.lm.

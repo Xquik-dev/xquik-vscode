@@ -151,6 +151,6 @@ it('Cursor sync > the new server registers only after the old one has stopped', 
 
 it('MCP config > the copied config names the hosted server & holds no secret', (): void => {
   expect(MCP_CONFIG).toBe(
-    '{"mcpServers":{"xquik":{"serverUrl":"https://xquik.com/mcp"}}}',
+    '{\n  "mcpServers": {\n    "xquik": {\n      "serverUrl": "https://xquik.com/mcp"\n    }\n  }\n}',
   );
 });
