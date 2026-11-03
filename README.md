@@ -55,7 +55,7 @@ A command that needs a key asks you to sign in first.
 
 ## Use the MCP server
 
-The hosted server lives at `https://xquik.com/mcp`. It gives your AI assistant X data.
+The hosted server URL is `https://xquik.com/mcp`. Your AI assistant reads X data through it.
 
 ![The Xquik MCP server in the editor](https://raw.githubusercontent.com/Xquik-dev/xquik-vscode/main/media/screenshots/mcp-server.png)
 
@@ -63,7 +63,7 @@ The hosted server lives at `https://xquik.com/mcp`. It gives your AI assistant X
 
 The extension adds the server for you. Start it from the MCP server list.
 
-The server uses your API key after you sign in. Signing in or out restarts the server.
+The server uses your API key after you sign in. Restart the server after you sign in or out.
 
 VSCodium hides MCP servers until you turn on AI features. After you sign in, select **Turn On AI Features**. You can also set `chat.disableAIFeatures` to `false` in Settings.
 
@@ -92,7 +92,7 @@ The config holds no secret. Cascade runs Xquik OAuth when you enable the server.
 | Look Up X Profile    | Opens a profile in a Markdown tab.                                 |
 | Copy MCP Config      | Copies the server config. It appears only in editors that need it. |
 
-Each command takes 1 optional text argument. A keybinding can skip the prompt with `args`.
+Search X Posts & Look Up X Profile take 1 optional text argument. A keybinding can skip their prompt with `args`.
 
 ```json
 { "key": "ctrl+alt+x", "command": "xquik.searchPosts", "args": "from:NASA" }

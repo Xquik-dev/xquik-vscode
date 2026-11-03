@@ -1,7 +1,7 @@
 {
   "name": "xquik",
   "displayName": "Xquik X (Twitter) Data API & MCP",
-  "description": "Search X (Twitter) posts, look up profiles & add the hosted Xquik MCP server to your editor. Not affiliated with X Corp.",
+  "description": "Search X (Twitter) posts, look up profiles & add the Xquik MCP server. Not affiliated with X Corp.",
   "version": "0.1.0",
   "publisher": "xquik",
   "license": "MIT",
