@@ -1,0 +1,133 @@
+{
+  "name": "xquik",
+  "displayName": "Xquik X (Twitter) Data API & MCP",
+  "description": "Search X (Twitter) posts, look up profiles & add the Xquik MCP server. Not affiliated with X Corp.",
+  "version": "0.1.0",
+  "publisher": "xquik",
+  "license": "MIT",
+  "homepage": "https://xquik.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Xquik-dev/xquik-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Xquik-dev/xquik-vscode/issues"
+  },
+  "author": {
+    "name": "Xquik",
+    "email": "support@xquik.com"
+  },
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#4C2626",
+    "theme": "dark"
+  },
+  "categories": [
+    "AI",
+    "Chat",
+    "Other"
+  ],
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "x-api",
+    "twitter-api",
+    "x-twitter",
+    "twitter",
+    "post-search",
+    "cursor",
+    "windsurf",
+    "vscodium",
+    "xquik"
+  ],
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "main": "dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": {
+      "supported": true
+    }
+  },
+  "contributes": {
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "xquik.mcp",
+        "label": "Xquik"
+      }
+    ],
+    "commands": [
+      {
+        "command": "xquik.signIn",
+        "title": "Sign In With API Key",
+        "category": "Xquik"
+      },
+      {
+        "command": "xquik.signOut",
+        "title": "Sign Out",
+        "category": "Xquik"
+      },
+      {
+        "command": "xquik.searchPosts",
+        "title": "Search X Posts",
+        "category": "Xquik"
+      },
+      {
+        "command": "xquik.lookUpProfile",
+        "title": "Look Up X Profile",
+        "category": "Xquik"
+      },
+      {
+        "command": "xquik.copyMcpConfig",
+        "title": "Copy MCP Config",
+        "category": "Xquik"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "xquik.copyMcpConfig",
+          "when": "xquik.mcpHost == manual"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "esbuild src/extension.ts --bundle --platform=node --format=cjs --target=node22 --external:vscode --minify --outfile=dist/extension.js",
+    "vscode:prepublish": "node --run build",
+    "package": "vsce package --no-dependencies --out dist/",
+    "types": "tsc --noEmit",
+    "lint": "oxlint --type-aware",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "test": "bun test ./tests/*.test.ts",
+    "test:package": "bun test ./tests/package/vsix.test.ts",
+    "check:reproducible": "bun tests/package/reproducible.ts"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.4",
+    "@types/vscode": "1.101.0",
+    "@vscode/vsce": "4.1.0",
+    "esbuild": "0.28.2",
+    "fast-check": "4.10.2",
+    "fflate": "0.8.3",
+    "ovsx": "1.3.0",
+    "oxfmt": "0.75.0",
+    "oxlint": "1.90.0",
+    "oxlint-tsgolint": "7.0.2005",
+    "typescript": "7.0.2"
+  }
+}

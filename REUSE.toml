@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: 2026 Xquik Contributors
+# SPDX-License-Identifier: MIT
+
+version = 1
+
+[[annotations]]
+path = [
+  ".github/SECURITY.md",
+  ".gitignore",
+  ".oxfmtrc.json",
+  ".oxlintrc.json",
+  ".vscodeignore",
+  "*.md",
+  "LICENSE",
+  "media/**",
+  "package-lock.json",
+  "package.json",
+  "tests/editor/stub/package.json",
+  "tsconfig.json",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Xquik Contributors"
+SPDX-License-Identifier = "MIT"
