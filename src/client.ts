@@ -12,6 +12,8 @@ const UNREACHABLE_MESSAGE =
   'Could not reach Xquik. Check your connection, then try again.';
 const UNREADABLE_MESSAGE =
   'Xquik sent an answer this version cannot read. Update the extension, then try again.';
+const NO_ANSWER_MESSAGE =
+  'Xquik could not answer right now. Try again in a minute.';
 
 const COUNT = z.number().nullish();
 const TEXT = z.string().nullish();
@@ -90,9 +92,10 @@ function failure(status: number, message: string): ApiFailure {
 
 function readFailure(status: number, body: unknown): ApiFailure {
   const error = ERROR_BODY.safeParse(body);
-  return error.success
-    ? failure(status, error.data.message)
-    : failure(0, UNREADABLE_MESSAGE);
+  return failure(
+    status,
+    error.success ? error.data.message : NO_ANSWER_MESSAGE,
+  );
 }
 
 function createClient({ fetch, version }: ClientDeps): XquikClient {

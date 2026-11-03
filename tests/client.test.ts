@@ -182,15 +182,25 @@ it.each([
 it.each([
   ['an error body without a message', 500, JSON.stringify({ error: 'x' })],
   ['an HTML error page', 502, '<html>Bad gateway</html>'],
-  ['a success body that is not JSON', 200, 'not json'],
+  ['an empty rejection', 401, ''],
 ])(
-  'client > %s becomes status 0',
+  'client > %s keeps its status & asks for a retry',
   async (_name, status, body): Promise<void> => {
     const { fetch } = answering(status, body);
     const result = await createClient({ fetch, version: '0.1.0' }).account(KEY);
-    expect(result).toMatchObject({ ok: false, status: 0 });
+    expect(result).toStrictEqual({
+      message: 'Xquik could not answer right now. Try again in a minute.',
+      ok: false,
+      status,
+    });
   },
 );
+
+it('client > a success body that is not JSON becomes status 0', async (): Promise<void> => {
+  const { fetch } = answering(200, 'not json');
+  const result = await createClient({ fetch, version: '0.1.0' }).account(KEY);
+  expect(result).toMatchObject({ ok: false, status: 0 });
+});
 
 it('client > a body that breaks the contract is rejected, not rendered', async (): Promise<void> => {
   const { client } = clientAnswering(200, { tweets: [{ id: 1 }] });
