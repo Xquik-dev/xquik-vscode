@@ -1,0 +1,239 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "eslint",
+    "typescript",
+    "unicorn",
+    "oxc",
+    "import",
+    "jsdoc",
+    "node",
+    "promise",
+    "jest"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "pedantic": "error",
+    "perf": "error",
+    "style": "error",
+    "restriction": "error",
+    "nursery": "error"
+  },
+  "env": { "node": true, "es2024": true },
+  "globals": { "Bun": "readonly" },
+  "options": { "denyWarnings": true, "reportUnusedDisableDirectives": "error" },
+  "rules": {
+    "oxc/no-async-await": "off",
+    "oxc/no-optional-chaining": "off",
+    "oxc/no-rest-spread-properties": "off",
+    "eslint/func-style": [
+      "error",
+      "declaration",
+      { "allowArrowFunctions": true }
+    ],
+    "eslint/no-undefined": "off",
+    "eslint/sort-keys": "off",
+    "eslint/sort-imports": "off",
+    "eslint/no-ternary": "off",
+    "eslint/id-length": "off",
+    "eslint/capitalized-comments": "off",
+    "eslint/no-plusplus": "off",
+    "eslint/no-void": ["error", { "allowAsStatement": false }],
+    "eslint/no-await-in-loop": "off",
+    "eslint/max-statements": "off",
+    "eslint/no-duplicate-imports": "off",
+    "eslint/curly": "off",
+    "eslint/no-bitwise": "off",
+    "unicorn/number-literal-case": "off",
+    "eslint/no-continue": "off",
+    "eslint/no-negated-condition": "off",
+    "eslint/require-await": "off",
+    "typescript/require-await": "off",
+    "unicorn/no-null": "off",
+    "eslint/no-empty-function": "off",
+    "eslint/max-lines-per-function": "off",
+    "eslint/prefer-destructuring": "off",
+    "eslint/no-param-reassign": ["error", { "props": true }],
+    "eslint/max-lines": "off",
+    "eslint/new-cap": ["error", { "capIsNew": false }],
+    "eslint/no-use-before-define": [
+      "error",
+      {
+        "functions": false,
+        "classes": true,
+        "variables": true,
+        "typedefs": false,
+        "enums": true,
+        "ignoreTypeReferences": true
+      }
+    ],
+    "eslint/no-inner-declarations": [
+      "error",
+      "both",
+      { "blockScopedFunctions": "disallow", "namespaces": "allow" }
+    ],
+    "eslint/one-var": "off",
+    "eslint/sort-vars": "error",
+
+    "import/no-named-export": "off",
+    "import/prefer-default-export": "off",
+    "import/no-default-export": "off",
+    "import/no-namespace": "off",
+    "import/no-nodejs-modules": "off",
+    "import/max-dependencies": "off",
+
+    "jsdoc/require-param": "off",
+    "jsdoc/require-returns": "off",
+    "jsdoc/require-param-type": "off",
+    "jsdoc/require-returns-type": "off",
+
+    "node/no-process-env": "off",
+    "node/no-top-level-await": "off",
+
+    "jest/require-hook": "off",
+    "jest/no-conditional-in-test": "off",
+
+    "promise/avoid-new": "off",
+
+    "typescript/array-type": ["error", { "default": "array-simple" }],
+    "typescript/restrict-plus-operands": [
+      "error",
+      {
+        "allowAny": false,
+        "allowBoolean": false,
+        "allowNullish": false,
+        "allowNumberAndString": false,
+        "allowRegExp": false
+      }
+    ],
+    "typescript/restrict-template-expressions": [
+      "error",
+      {
+        "allowAny": false,
+        "allowBoolean": false,
+        "allowNullish": false,
+        "allowNumber": false,
+        "allowRegExp": false,
+        "allowArray": false,
+        "allowNever": false
+      }
+    ],
+    "typescript/prefer-nullish-coalescing": [
+      "error",
+      { "ignoreConditionalTests": false }
+    ],
+    "typescript/no-floating-promises": ["error", { "checkThenables": true }],
+    "eslint/no-restricted-exports": [
+      "error",
+      { "restrictedNamedExports": ["then"] }
+    ],
+    "eslint/no-undef": "off",
+    "typescript/prefer-readonly-parameter-types": "off",
+
+    "eslint/no-magic-numbers": [
+      "error",
+      {
+        "ignore": [-1, 0, 1, 2],
+        "ignoreArrayIndexes": true,
+        "ignoreDefaultValues": true,
+        "enforceConst": true,
+        "detectObjects": false
+      }
+    ],
+    "eslint/max-params": ["error", { "max": 4 }],
+    "eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^$",
+        "caughtErrorsIgnorePattern": "^$",
+        "destructuredArrayIgnorePattern": "^$",
+        "ignoreRestSiblings": true,
+        "ignoreUsingDeclarations": true,
+        "varsIgnorePattern": "^$"
+      }
+    ],
+    "eslint/no-underscore-dangle": [
+      "error",
+      {
+        "allowInArrayDestructuring": false,
+        "allowInObjectDestructuring": false,
+        "enforceInClassFields": true,
+        "enforceInMethodNames": true
+      }
+    ],
+
+    "eslint/complexity": ["error", { "max": 10 }],
+    "eslint/max-depth": ["error", { "max": 3 }],
+
+    "node/no-sync": ["error", { "allowAtRootLevel": true }],
+
+    "unicorn/filename-case": [
+      "error",
+      { "cases": { "kebabCase": true, "camelCase": true } }
+    ],
+
+    "eslint/no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "child_process",
+            "message": "child_process is not allowed in the extension."
+          },
+          {
+            "name": "node:child_process",
+            "message": "child_process is not allowed in the extension."
+          },
+          {
+            "name": "node:fs",
+            "message": "File system access is not allowed in the extension."
+          },
+          {
+            "name": "node:fs/promises",
+            "message": "File system access is not allowed in the extension."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["src/commands.ts", "src/extension.ts"],
+      "rules": { "promise/prefer-await-to-then": "off" }
+    },
+    {
+      "files": ["tests/**"],
+      "rules": {
+        "eslint/no-console": "off",
+        "eslint/no-magic-numbers": "off",
+        "eslint/no-restricted-imports": "off",
+        "import/no-relative-parent-imports": "off",
+        "node/no-sync": "off"
+      }
+    },
+    {
+      "files": ["tests/editor/**"],
+      "rules": {
+        "typescript/no-base-to-string": "off",
+        "typescript/no-unnecessary-condition": "off",
+        "typescript/no-unsafe-argument": "off",
+        "typescript/no-unsafe-assignment": "off",
+        "typescript/no-unsafe-call": "off",
+        "typescript/no-unsafe-member-access": "off",
+        "typescript/no-unsafe-return": "off",
+        "typescript/restrict-template-expressions": "off",
+        "typescript/strict-boolean-expressions": "off"
+      }
+    },
+    {
+      "files": ["tests/editor/stub/suite.cjs"],
+      "rules": {
+        "import/no-commonjs": "off",
+        "import/unambiguous": "off",
+        "typescript/no-require-imports": "off",
+        "typescript/no-var-requires": "off"
+      }
+    }
+  ]
+}
