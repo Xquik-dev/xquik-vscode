@@ -32,15 +32,15 @@ step() {
 }
 
 stop() {
-	printf 'Release stopped: %s\n' "$1" >&2
+	printf 'Release stopped. %s\n' "$1" >&2
 	exit 1
 }
 
 [[ -n "${XQUIK_EDITOR_KEYCHAIN_SERVICE:-}" ]] ||
-	stop "set XQUIK_EDITOR_KEYCHAIN_SERVICE to the service of the Keychain item that holds the Xquik API key."
+	stop "Set XQUIK_EDITOR_KEYCHAIN_SERVICE to the service of the Keychain item that holds the Xquik API key."
 
 step "Checking that the working tree is clean."
-[[ -z "$(git status --porcelain)" ]] || stop "commit or remove local changes first."
+[[ -z "$(git status --porcelain)" ]] || stop "Commit or remove local changes first."
 
 commit=$(git rev-parse HEAD)
 
@@ -48,24 +48,24 @@ if $dry_run; then
 	step "This is a dry run, so the branch and its GitHub status are not checked."
 else
 	step "Checking that main is checked out."
-	[[ "$(git symbolic-ref --quiet --short HEAD || true)" == "main" ]] || stop "switch to main first."
+	[[ "$(git symbolic-ref --quiet --short HEAD || true)" == "main" ]] || stop "Switch to main first."
 
 	step "Fetching main from origin."
 	git fetch --quiet origin main
 
 	step "Checking that main matches origin/main."
 	[[ "$commit" == "$(git rev-parse origin/main)" ]] ||
-		stop "pull or push until main matches origin/main."
+		stop "Pull or push until main matches origin/main."
 
 	step "Checking GitHub CLI access."
-	gh auth status --hostname github.com >/dev/null 2>&1 || stop "run gh auth login first."
+	gh auth status --hostname github.com >/dev/null 2>&1 || stop "Run gh auth login first."
 
 	step "Checking the $status_context status of $commit."
 	checks=$(gh api "repos/$repository/commits/$commit/status" \
 		--jq "[.statuses[] | select(.context == \"$status_context\") | .state] | first // \"missing\"") ||
-		stop "could not read commit statuses. Check gh auth status, then retry."
+		stop "Could not read commit statuses. Check gh auth status, then retry."
 	[[ "$checks" == "success" ]] ||
-		stop "the $status_context status is $checks. Run bin/check-local through the gate first."
+		stop "The $status_context status is $checks. Run bin/check-local through the gate first."
 fi
 
 step "Reading the extension id and version from package.json."
@@ -80,26 +80,25 @@ version_url="$registry/api/$publisher/$name/$version"
 step "Checking that tag $tag is new or already on this commit."
 local_tag=$(git rev-parse --quiet --verify "refs/tags/$tag^{commit}" || true)
 [[ -z "$local_tag" || "$local_tag" == "$commit" ]] ||
-	stop "tag $tag points at another commit. Bump the version in package.json first."
+	stop "Tag $tag points at another commit. Bump the version in package.json first."
 remote_tag_status=0
 remote_tag=$(git ls-remote --exit-code origin "refs/tags/$tag^{}") || remote_tag_status=$?
 case $remote_tag_status in
 	0)
 		[[ "${remote_tag%%[[:space:]]*}" == "$commit" ]] ||
-			stop "tag $tag on origin points at another commit. Bump the version in package.json first."
+			stop "Tag $tag on origin points at another commit. Bump the version in package.json first."
 		if [[ -z "$local_tag" ]]; then
 			git fetch --quiet origin "refs/tags/$tag:refs/tags/$tag"
 			local_tag=$commit
 		fi
 		;;
 	2) ;;
-	*) stop "could not read tags from origin. Check your network and GitHub access." ;;
+	*) stop "Could not read tags from origin. Check your network and GitHub access." ;;
 esac
 
 step "Installing the locked dependencies."
 npm ci --ignore-scripts
 
-# A fixed zip time rebuilds the same bytes, so a rerun still matches the hash on the registry.
 step "Packaging $vsix."
 SOURCE_DATE_EPOCH=$(git show --no-patch --format=%ct "$commit") node --run package
 
@@ -108,7 +107,7 @@ step "The package sha256 is $local_sha."
 
 step "Proving the package in $editor_app."
 node tests/editor/run.mjs "$vsix" "$editor_app" ||
-	stop "the editor proof failed. Read the result above, then retry."
+	stop "The editor proof failed. Read the result above, then retry."
 
 if $dry_run; then
 	step "Dry run finished for $extension. Nothing was published, tagged or released."
@@ -122,7 +121,7 @@ http_status() {
 publish() {
 	step "Reading the Open VSX token from the Keychain item $token_item."
 	OVSX_PAT=$(security find-generic-password -s "$token_item" -w) ||
-		stop "add the Open VSX token to the Keychain item $token_item, then retry."
+		stop "Add the Open VSX token to the Keychain item $token_item, then retry."
 	export OVSX_PAT
 
 	step "Checking the $publisher namespace on Open VSX."
@@ -132,7 +131,7 @@ publish() {
 			step "Creating the $publisher namespace."
 			npx --no-install ovsx create-namespace "$publisher"
 			;;
-		*) stop "could not read the namespace from Open VSX. Check your network, then retry." ;;
+		*) stop "Could not read the namespace from Open VSX. Check your network, then retry." ;;
 	esac
 
 	step "Publishing $extension to Open VSX."
@@ -144,7 +143,7 @@ step "Checking whether Open VSX has $extension."
 case $(http_status "$version_url") in
 	200) step "Skipping the upload because Open VSX already has $extension." ;;
 	404) publish ;;
-	*) stop "could not read $extension from Open VSX. Check your network, then retry." ;;
+	*) stop "Could not read $extension from Open VSX. Check your network, then retry." ;;
 esac
 
 published_sha() {

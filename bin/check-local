@@ -15,7 +15,7 @@ for arg in "$@"; do
 	case $arg in
 		--no-status) post_status=false ;;
 		*)
-			printf 'Unknown option: %s. Run bin/check-local or bin/check-local --no-status.\n' "$arg" >&2
+			printf 'Unknown option %s. Run bin/check-local or bin/check-local --no-status.\n' "$arg" >&2
 			exit 2
 			;;
 	esac
@@ -25,13 +25,13 @@ status_sha=$(git rev-parse HEAD)
 if [[ $post_status == true ]]; then
 	if ! command -v gh >/dev/null 2>&1; then
 		post_status=false
-		printf 'Not posting the %s status: install the GitHub CLI to post it.\n' "$status_context"
+		printf 'Not posting the %s status. Install the GitHub CLI to post it.\n' "$status_context"
 	elif [[ -n "$(git status --porcelain)" ]]; then
 		post_status=false
-		printf 'Not posting the %s status: commit or remove local changes first.\n' "$status_context"
+		printf 'Not posting the %s status. Commit or remove local changes first.\n' "$status_context"
 	elif ! gh api --silent "repos/$status_repo/commits/$status_sha" >/dev/null 2>&1; then
 		post_status=false
-		printf 'Not posting the %s status: push commit %s first, or check gh auth status.\n' \
+		printf 'Not posting the %s status. Push commit %s first, or check gh auth status.\n' \
 			"$status_context" "${status_sha:0:12}"
 	fi
 fi
@@ -66,7 +66,7 @@ trap 'exit 130' INT TERM
 send_status pending "Running local checks."
 
 fail_check() {
-	printf 'Check failed: %s. %s\n' "$current_check" "$1" >&2
+	printf 'Check failed at %s. %s\n' "$current_check" "$1" >&2
 	exit 1
 }
 
@@ -74,7 +74,7 @@ run_check() {
 	local next_step=$2
 	current_check=$1
 	shift 2
-	printf 'Running check: %s.\n' "$current_check"
+	printf 'Running the %s check.\n' "$current_check"
 	"$@" || fail_check "$next_step"
 	current_check=""
 }
