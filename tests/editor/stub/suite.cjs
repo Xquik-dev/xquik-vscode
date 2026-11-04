@@ -11,6 +11,7 @@ const vscode = require('vscode');
 const EXTENSION_ID = 'xquik.xquik';
 const SEARCH_URL = 'https://xquik.com/api/v1/x/tweets/search';
 const PROMPT_SETTLE_MS = 1000;
+const POST_PATH = /^\/\w+\/status\/\d+$/u;
 const COMMANDS = [
   'xquik.copyMcpConfig',
   'xquik.lookUpProfile',
@@ -27,6 +28,17 @@ function countSearches() {
     return original(url, init);
   };
   return count;
+}
+
+function postLinks(text) {
+  return [...text.matchAll(/\]\((?<link>[^)\s]+)\)/gu)]
+    .map(({ groups }) => groups.link)
+    .filter((link) => URL.canParse(link))
+    .map((link) => new URL(link))
+    .filter(
+      ({ hostname, pathname }) =>
+        hostname === 'x.com' && POST_PATH.test(pathname),
+    );
 }
 
 function activeText() {
@@ -78,7 +90,7 @@ async function proveLive(proof, key) {
   await vscode.commands.executeCommand('xquik.signIn', key);
   await vscode.commands.executeCommand('xquik.searchPosts', 'from:NASA');
   assert.equal(searches.value, 1, 'the signed-in search made 1 API call');
-  assert.match(activeText(), /https:\/\/x\.com\/\w+\/status\/\d+/u);
+  assert.ok(postLinks(activeText()).length > 0, 'the search shows a post link');
 
   await vscode.commands.executeCommand('xquik.lookUpProfile', '@NASA');
   assert.match(activeText(), /@NASA/u);
