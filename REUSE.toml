@@ -11,6 +11,7 @@ path = [
   ".oxlintrc.json",
   ".vscodeignore",
   "*.md",
+  "CITATION.cff",
   "LICENSE",
   "media/**",
   "package-lock.json",
