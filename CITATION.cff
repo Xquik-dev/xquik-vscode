@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: If you use Xquik Twitter MCP for VS Code, cite it using this metadata.
+title: Xquik Twitter MCP for VS Code
+type: software
+abstract: >-
+  Twitter MCP server for VSCode, Cursor & Windsurf by Xquik. 1 extension
+  connects the hosted X MCP server & X (Twitter) data API to editor agents.
+authors:
+  - name: Xquik
+    website: https://xquik.com
+url: https://github.com/Xquik-dev/xquik-vscode
+repository-code: https://github.com/Xquik-dev/xquik-vscode
+license: MIT
+keywords:
+  - Xquik
+  - Twitter MCP VSCode
+  - Twitter MCP
+  - X MCP
+  - VS Code extension
+  - Cursor
+  - Windsurf
