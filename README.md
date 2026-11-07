@@ -1,6 +1,6 @@
-# Twitter MCP for VSCode, Cursor & Windsurf by Xquik
+# MCP Twitter Extension for VSCode, Cursor & Windsurf by Xquik
 
-Use this Twitter MCP VSCode extension by Xquik to search X from your editor.
+Use this MCP Twitter VSCode extension by Xquik to search X from your editor.
 It also looks up profiles and adds the hosted Xquik MCP server.
 
 Xquik is the world's fastest and cheapest X Twitter scraper service with the most complete X data.
