@@ -42,14 +42,14 @@ You can also select **Install from VSIX** in the Extensions view menu.
 
 1. Copy an API key from [your account page](https://dashboard.xquik.com/en/account?tab=api-keys).
 2. Open the Command Palette.
-3. Run **Sign In With API Key** from the Xquik category.
+3. Run `Sign In With API Key` from the Xquik category.
 4. Paste your key.
 
 A command that needs a key asks you to sign in first.
 
 ## Search X (Twitter) posts
 
-Run **Search X Posts** from the Xquik category.
+Run `Search X Posts` from the Xquik category.
 Type a query such as `from:NASA`.
 The tweets open in a Markdown tab.
 
@@ -73,7 +73,7 @@ Checked on 2026-11-07. See each number with its date & source on [xquik.com/benc
 
 ## Look up an X (Twitter) profile
 
-Run **Look Up X Profile** with a username or profile link.
+Run `Look Up X Profile` with a username or profile link.
 The profile opens in a Markdown tab.
 
 ![An X (Twitter) profile in a Markdown tab](https://raw.githubusercontent.com/Xquik-dev/xquik-vscode/main/media/screenshots/look-up-profile.png)
@@ -107,7 +107,7 @@ Signing in or out updates the server.
 
 ### Windsurf
 
-1. Run **Copy MCP Config** from the Xquik category.
+1. Run `Copy MCP Config` from the Xquik category.
 2. Open `mcp_config.json` from the Cascade MCP menu.
 3. Paste the config.
 4. Enable Xquik.
@@ -121,15 +121,15 @@ Cascade runs Xquik OAuth when you enable the server.
 
 ## Commands
 
-| Command              | What it does                                                       |
-| -------------------- | ------------------------------------------------------------------ |
-| Sign In With API Key | Saves your key once Xquik accepts it.                              |
-| Sign Out             | Removes your key from this editor.                                 |
-| Search X Posts       | Opens up to 20 matching posts in a Markdown tab.                   |
-| Look Up X Profile    | Opens a profile in a Markdown tab.                                 |
-| Copy MCP Config      | Copies the server config. It appears only in editors that need it. |
+| Command                | What it does                                                       |
+| ---------------------- | ------------------------------------------------------------------ |
+| `Sign In With API Key` | Saves your key once Xquik accepts it.                              |
+| `Sign Out`             | Removes your key from this editor.                                 |
+| `Search X Posts`       | Opens up to 20 matching posts in a Markdown tab.                   |
+| `Look Up X Profile`    | Opens a profile in a Markdown tab.                                 |
+| `Copy MCP Config`      | Copies the server config. It appears only in editors that need it. |
 
-Search X Posts & Look Up X Profile take 1 optional text argument.
+`Search X Posts` & `Look Up X Profile` take 1 optional text argument.
 A keybinding can skip their prompt with `args`.
 
 ```json
