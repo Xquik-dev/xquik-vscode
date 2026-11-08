@@ -10,7 +10,7 @@ Xquik is independent and not affiliated with X Corp.
 
 <!-- trust:win:start -->
 
-The Xquik REST API read 45 tweets per second on 2026-10-15. That cost $0.15 per 1,000. The fastest of 4 rival Actors read 12.5 per second. The cheapest cost $0.173 per 1,000. [Compare each run](https://xquik.com/benchmarks).
+The Xquik REST API read 45 tweets per second on 2026-10-15. That cost $0.15 per 1,000. The fastest of 4 rival Actors read 12.5 per second. The cheapest cost $0.173 per 1,000. [Compare each run](https://xquik.com/benchmarks#benchmark-x-tweet-scraper).
 
 <!-- trust:win:end -->
 
@@ -42,14 +42,14 @@ You can also select **Install from VSIX** in the Extensions view menu.
 
 1. Copy an API key from [your account page](https://dashboard.xquik.com/en/account?tab=api-keys).
 2. Open the Command Palette.
-3. Run **Sign In With API Key** from the Xquik category.
+3. Run `Sign In With API Key` from the Xquik category.
 4. Paste your key.
 
 A command that needs a key asks you to sign in first.
 
 ## Search X (Twitter) posts
 
-Run **Search X Posts** from the Xquik category.
+Run `Search X Posts` from the Xquik category.
 Type a query such as `from:NASA`.
 The tweets open in a Markdown tab.
 
@@ -64,16 +64,16 @@ Next, read the [MCP setup](#use-the-x-twitter-mcp-server), the [command table](#
 [![X (Twitter) API p99 server read time](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Frest-p99.json)](https://xquik.com/benchmarks#speed)
 [![X (Twitter) Skill installs](https://img.shields.io/endpoint?url=https%3A%2F%2Fxquik.com%2Fbadges%2Fskill-installs.json)](https://xquik.com/benchmarks#skill-installs)
 
-- 6.1 s p99 REST server read time over 7 days, failures included ([source](https://xquik.com/benchmarks#speed)) <!-- trust:rest-p99 6050 -->
-- 1,600+ installs of Xquik's X (Twitter) Skills on skills.sh ([source](https://xquik.com/benchmarks#skill-installs)) <!-- trust:skill-installs 1635 -->
+- 5.4 s p99 REST server read time over 7 days, failures included ([source](https://xquik.com/benchmarks#speed)) <!-- trust:rest-p99 5312 -->
+- 1,600+ installs of Xquik's X (Twitter) Skills on skills.sh ([source](https://xquik.com/benchmarks#skill-installs)) <!-- trust:skill-installs 1636 -->
 
-Checked on 2026-11-07. See each number with its date & source on [xquik.com/benchmarks](https://xquik.com/benchmarks) or as [JSON](https://xquik.com/trust.json).
+Checked on 2026-11-08. See each number with its date & source on [xquik.com/benchmarks](https://xquik.com/benchmarks) or as [JSON](https://xquik.com/trust.json).
 
 <!-- trust:end -->
 
 ## Look up an X (Twitter) profile
 
-Run **Look Up X Profile** with a username or profile link.
+Run `Look Up X Profile` with a username or profile link.
 The profile opens in a Markdown tab.
 
 ![An X (Twitter) profile in a Markdown tab](https://raw.githubusercontent.com/Xquik-dev/xquik-vscode/main/media/screenshots/look-up-profile.png)
@@ -107,7 +107,7 @@ Signing in or out updates the server.
 
 ### Windsurf
 
-1. Run **Copy MCP Config** from the Xquik category.
+1. Run `Copy MCP Config` from the Xquik category.
 2. Open `mcp_config.json` from the Cascade MCP menu.
 3. Paste the config.
 4. Enable Xquik.
@@ -121,15 +121,15 @@ Cascade runs Xquik OAuth when you enable the server.
 
 ## Commands
 
-| Command              | What it does                                                       |
-| -------------------- | ------------------------------------------------------------------ |
-| Sign In With API Key | Saves your key once Xquik accepts it.                              |
-| Sign Out             | Removes your key from this editor.                                 |
-| Search X Posts       | Opens up to 20 matching posts in a Markdown tab.                   |
-| Look Up X Profile    | Opens a profile in a Markdown tab.                                 |
-| Copy MCP Config      | Copies the server config. It appears only in editors that need it. |
+| Command                | What it does                                                       |
+| ---------------------- | ------------------------------------------------------------------ |
+| `Sign In With API Key` | Saves your key once Xquik accepts it.                              |
+| `Sign Out`             | Removes your key from this editor.                                 |
+| `Search X Posts`       | Opens up to 20 matching posts in a Markdown tab.                   |
+| `Look Up X Profile`    | Opens a profile in a Markdown tab.                                 |
+| `Copy MCP Config`      | Copies the server config. It appears only in editors that need it. |
 
-Search X Posts & Look Up X Profile take 1 optional text argument.
+`Search X Posts` & `Look Up X Profile` take 1 optional text argument.
 A keybinding can skip their prompt with `args`.
 
 ```json
