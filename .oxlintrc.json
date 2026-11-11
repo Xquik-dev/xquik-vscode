@@ -97,6 +97,19 @@
     "promise/avoid-new": "off",
 
     "typescript/array-type": ["error", { "default": "array-simple" }],
+    "typescript/ban-ts-comment": [
+      "error",
+      {
+        "ts-check": false,
+        "ts-expect-error": true,
+        "ts-ignore": true,
+        "ts-nocheck": true
+      }
+    ],
+    "typescript/consistent-type-assertions": [
+      "error",
+      { "assertionStyle": "never" }
+    ],
     "typescript/restrict-plus-operands": [
       "error",
       {
@@ -210,29 +223,6 @@
         "eslint/no-restricted-imports": "off",
         "import/no-relative-parent-imports": "off",
         "node/no-sync": "off"
-      }
-    },
-    {
-      "files": ["tests/editor/**"],
-      "rules": {
-        "typescript/no-base-to-string": "off",
-        "typescript/no-unnecessary-condition": "off",
-        "typescript/no-unsafe-argument": "off",
-        "typescript/no-unsafe-assignment": "off",
-        "typescript/no-unsafe-call": "off",
-        "typescript/no-unsafe-member-access": "off",
-        "typescript/no-unsafe-return": "off",
-        "typescript/restrict-template-expressions": "off",
-        "typescript/strict-boolean-expressions": "off"
-      }
-    },
-    {
-      "files": ["tests/editor/stub/suite.cjs"],
-      "rules": {
-        "import/no-commonjs": "off",
-        "import/unambiguous": "off",
-        "typescript/no-require-imports": "off",
-        "typescript/no-var-requires": "off"
       }
     }
   ]

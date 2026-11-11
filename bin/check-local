@@ -50,7 +50,7 @@ current_check=""
 report_result() {
 	local exit_status=$?
 	if ((exit_status == 0)); then
-		send_status success "REUSE, install, types, lint, format, tests, audit, signatures, package & reproducibility passed"
+		send_status success "REUSE, escape hatches, install, types at 100% coverage, lint, format, tests, audit, signatures, package & reproducibility passed"
 	elif [[ -z $current_check ]]; then
 		send_status failure "Stopped before the checks finished."
 	elif ((exit_status == 130)); then
@@ -91,6 +91,20 @@ run_check "license metadata" \
 run_check "install" \
 	"Sync package-lock.json with package.json, then retry." \
 	npm ci --ignore-scripts
+
+find_escape_hatches() {
+	local found
+	found=$(git ls-files '*.js' '*.cjs' '*.mjs' '*.jsx' '*.d.ts' '*.d.mts' '*.d.cts')
+	found+=$(git grep -nE '(o[x]lint|e[s]lint)-disable|@ts-(i[g]nore|n[o]check|e[x]pect-error)|type-coverage:i[g]nore' -- ':!*.md' || true)
+	[[ -z $found ]] || {
+		printf '%s\n' "$found"
+		return 1
+	}
+}
+
+run_check "escape hatches" \
+	"Write each file above in TypeScript and type the value instead of suppressing its check." \
+	find_escape_hatches
 
 run_check "types" \
 	"Fix each type error above." \

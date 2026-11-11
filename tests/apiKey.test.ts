@@ -80,9 +80,9 @@ it('parseApiKey > a missing value is no key', (): void => {
 });
 
 it('ApiKey > a plain string is not a key until it is parsed', (): void => {
-  // @ts-expect-error A key must come through parseApiKey.
-  const key: ApiKey = 'xq_plain';
-  expect<string | undefined>(parseApiKey(key)).toBe('xq_plain');
+  const plainIsKey: 'xq_plain' extends ApiKey ? true : false = false;
+  expect(plainIsKey).toBe(false);
+  expect<string | undefined>(parseApiKey('xq_plain')).toBe('xq_plain');
 });
 
 it('key store > a written key reads back & clearing removes it', async (): Promise<void> => {
