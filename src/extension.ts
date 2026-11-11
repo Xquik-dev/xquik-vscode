@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: MIT
 
 import * as vscode from 'vscode';
-import * as z from 'zod';
+
+import { version as extensionVersion } from '#manifest';
 
 import type { KeyStore } from './apiKey';
 import type { CursorMcp, McpHost } from './mcp';
@@ -16,8 +17,6 @@ import {
   MCP_URL,
   syncCursorServer,
 } from './mcp';
-
-const MANIFEST = z.object({ version: z.string() });
 
 interface McpDeps {
   readonly keys: KeyStore;
@@ -97,12 +96,10 @@ async function connectMcp(
 async function activate(
   context: vscode.ExtensionContext,
 ): Promise<ExtensionApi> {
-  const manifest: unknown = context.extension.packageJSON;
-  const { version } = MANIFEST.parse(manifest);
   const keys = createKeyStore(context.secrets);
   const client = createClient({
     fetch: async (url, init): Promise<Response> => globalThis.fetch(url, init),
-    version,
+    version: extensionVersion,
   });
   const host = detectHost(vscode);
   await vscode.commands.executeCommand(
@@ -112,7 +109,11 @@ async function activate(
   );
   context.subscriptions.push(
     ...registerCommands({ client, keys, mcpHost: host.kind }),
-    ...(await connectMcp(host, { keys, secrets: context.secrets, version })),
+    ...(await connectMcp(host, {
+      keys,
+      secrets: context.secrets,
+      version: extensionVersion,
+    })),
   );
   await welcome(context.globalState, keys);
   return { mcpHost: host.kind };

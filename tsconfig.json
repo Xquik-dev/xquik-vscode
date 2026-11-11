@@ -2,6 +2,7 @@
   "compilerOptions": {
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
+    "erasableSyntaxOnly": true,
     "isolatedModules": true,
     "lib": ["es2024"],
     "module": "esnext",
@@ -14,11 +15,11 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "skipLibCheck": true,
+    "resolveJsonModule": true,
     "strict": true,
     "target": "es2023",
     "types": ["bun", "vscode"],
     "verbatimModuleSyntax": true
   },
-  "include": ["src", "tests/*.ts", "tests/package/*.ts"]
+  "include": ["src", "tests"]
 }

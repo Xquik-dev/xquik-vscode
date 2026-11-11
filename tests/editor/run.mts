@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 Xquik Contributors
 // SPDX-License-Identifier: MIT
 
+import { build } from 'esbuild';
 import { execFileSync, spawn } from 'node:child_process';
 import {
   existsSync,
@@ -15,6 +16,7 @@ import {
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as z from 'zod';
 
 const STUB = fileURLToPath(new URL('stub', import.meta.url));
 const REPOSITORY = fileURLToPath(new URL('../..', import.meta.url));
@@ -29,6 +31,13 @@ const FLAGS = [
   '--disable-workspace-trust',
   '--use-mock-keychain',
 ];
+const MANIFEST = z.object({
+  name: z.string(),
+  publisher: z.string(),
+  version: z.string(),
+});
+const PRODUCT = z.object({ applicationName: z.string() });
+const SUITE_RESULT = z.record(z.string(), z.unknown());
 const SETTINGS = {
   'extensions.autoCheckUpdates': false,
   'extensions.autoUpdate': false,
@@ -36,16 +45,29 @@ const SETTINGS = {
   'update.mode': 'none',
 };
 
-function readJson(file) {
+interface Editor {
+  readonly binary: string;
+  readonly cli: string;
+}
+
+interface EditorRun {
+  readonly exitCode: number | null;
+  readonly output: string;
+  readonly signal: NodeJS.Signals | null;
+}
+
+function readJson(file: string): unknown {
   return JSON.parse(readFileSync(file, 'utf8'));
 }
 
-function resolveEditor(editorPath) {
+function resolveEditor(editorPath: string): Editor {
   const app = /^.+?\.app(?=\/|$)/u.exec(realpathSync(editorPath))?.[0];
   if (app === undefined)
     throw new Error(`${editorPath} is not in a macOS app.`);
   const resources = path.join(app, 'Contents/Resources/app');
-  const { applicationName } = readJson(path.join(resources, 'product.json'));
+  const { applicationName } = PRODUCT.parse(
+    readJson(path.join(resources, 'product.json')),
+  );
   const infoPlist = path.join(app, 'Contents/Info.plist');
   const executable = execFileSync(
     'plutil',
@@ -58,8 +80,8 @@ function resolveEditor(editorPath) {
   };
 }
 
-function readApiKey() {
-  const service = process.env.XQUIK_EDITOR_KEYCHAIN_SERVICE;
+function readApiKey(): string | undefined {
+  const service = process.env['XQUIK_EDITOR_KEYCHAIN_SERVICE'];
   return service === undefined
     ? undefined
     : execFileSync('security', ['find-generic-password', '-s', service, '-w'], {
@@ -68,7 +90,7 @@ function readApiKey() {
       }).trim();
 }
 
-function editorEnvironment() {
+function editorEnvironment(): NodeJS.ProcessEnv {
   return Object.fromEntries(
     Object.entries(process.env).filter(
       ([name]) => !/^(?:ELECTRON_|VSCODE_)/u.test(name),
@@ -76,24 +98,29 @@ function editorEnvironment() {
   );
 }
 
-async function launch(binary, flags, env) {
+async function launch(
+  binary: string,
+  flags: readonly string[],
+  env: NodeJS.ProcessEnv,
+): Promise<EditorRun> {
   return new Promise((resolve, reject) => {
     const child = spawn(binary, flags, {
       env,
       stdio: ['ignore', 'pipe', 'pipe'],
     });
-    const output = [];
-    const collect = (chunk) => {
+    const output: Buffer[] = [];
+    const collect = (chunk: Buffer): void => {
       output.push(chunk);
       if (output.length > OUTPUT_CHUNKS) output.shift();
     };
     child.stdout.on('data', collect);
     child.stderr.on('data', collect);
-    const term = setTimeout(() => child.kill('SIGTERM'), TIMEOUT_MS);
-    const kill = setTimeout(
-      () => child.kill('SIGKILL'),
-      TIMEOUT_MS + KILL_GRACE_MS,
-    );
+    const term = setTimeout((): void => {
+      child.kill('SIGTERM');
+    }, TIMEOUT_MS);
+    const kill = setTimeout((): void => {
+      child.kill('SIGKILL');
+    }, TIMEOUT_MS + KILL_GRACE_MS);
     child.once('error', reject);
     child.once('close', (exitCode, signal) => {
       clearTimeout(term);
@@ -103,27 +130,41 @@ async function launch(binary, flags, env) {
   });
 }
 
-async function main() {
+async function bundleSuite(outfile: string): Promise<void> {
+  await build({
+    bundle: true,
+    entryPoints: [path.join(STUB, 'suite.ts')],
+    external: ['vscode'],
+    format: 'cjs',
+    logLevel: 'error',
+    outfile,
+    platform: 'node',
+    target: 'node22',
+  });
+}
+
+async function main(): Promise<number> {
   const [vsixPath, editorPath, resultPath = 'dist/editor-proof.json'] =
     process.argv.slice(2);
   if (vsixPath === undefined || editorPath === undefined) {
     console.error(
-      'Run node tests/editor/run.mjs <vsix> <editor app or binary> [result json].',
+      'Run node tests/editor/run.mts <vsix> <editor app or binary> [result json].',
     );
     return 2;
   }
-  const { name, publisher, version } = readJson(
-    path.join(REPOSITORY, 'package.json'),
+  const { name, publisher, version } = MANIFEST.parse(
+    readJson(path.join(REPOSITORY, 'package.json')),
   );
   const installed = `${publisher}.${name}@${version}`;
   const editor = resolveEditor(editorPath);
   const apiKey = readApiKey();
-  const redact = (text) =>
+  const redact = (text: string): string =>
     apiKey === undefined ? text : text.replaceAll(apiKey, '[redacted]');
   const env = editorEnvironment();
   const temporary = mkdtempSync(path.join(tmpdir(), 'xq-'));
   const root = realpathSync(temporary);
   const extensions = path.join(root, 'extensions');
+  const suite = path.join(root, 'suite.cjs');
   const suiteResult = path.join(root, 'suite.json');
   const userData = path.join(root, 'data');
   const profile = [
@@ -131,6 +172,7 @@ async function main() {
     `--extensions-dir=${extensions}`,
   ];
   try {
+    await bundleSuite(suite);
     mkdirSync(path.join(userData, 'User'), { recursive: true });
     writeFileSync(
       path.join(userData, 'User/settings.json'),
@@ -154,7 +196,7 @@ async function main() {
         ...profile,
         ...FLAGS,
         `--extensionDevelopmentPath=${STUB}`,
-        `--extensionTestsPath=${path.join(STUB, 'suite.cjs')}`,
+        `--extensionTestsPath=${suite}`,
       ],
       {
         ...env,
@@ -163,17 +205,20 @@ async function main() {
         XQUIK_EDITOR_RESULT: suiteResult,
       },
     );
-    const suite = existsSync(suiteResult) ? readJson(suiteResult) : {};
-    const ok = editorRun.exitCode === 0 && suite.ok === true;
+    const proof = existsSync(suiteResult)
+      ? SUITE_RESULT.parse(readJson(suiteResult))
+      : {};
+    const ok = editorRun.exitCode === 0 && proof['ok'] === true;
     const text = redact(
       JSON.stringify(
         {
-          ...suite,
+          ...proof,
           editor: editorPath,
           exitCode: editorRun.exitCode,
           installed,
           ok,
           signal: editorRun.signal,
+          version,
         },
         undefined,
         2,

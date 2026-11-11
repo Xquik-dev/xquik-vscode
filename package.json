@@ -46,6 +46,9 @@
     "vscode": "^1.101.0"
   },
   "main": "dist/extension.js",
+  "imports": {
+    "#manifest": "./package.json"
+  },
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -108,7 +111,7 @@
     "build": "esbuild src/extension.ts --bundle --platform=node --format=cjs --target=node22 --external:vscode --minify --outfile=dist/extension.js",
     "vscode:prepublish": "node --run build",
     "package": "vsce package --no-dependencies --out dist/",
-    "types": "tsc --noEmit",
+    "types": "tsc --noEmit && type-coverage --strict --at-least 100 --detail -p tsconfig.json",
     "lint": "oxlint --type-aware",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
@@ -130,9 +133,13 @@
     "oxfmt": "0.75.0",
     "oxlint": "1.90.0",
     "oxlint-tsgolint": "7.0.2005",
+    "type-coverage": "2.30.4",
     "typescript": "7.0.2"
   },
   "overrides": {
-    "minimatch": "11.0.4"
+    "minimatch": "11.0.4",
+    "type-coverage-core": {
+      "typescript": "npm:@typescript/typescript6@6.0.2"
+    }
   }
 }

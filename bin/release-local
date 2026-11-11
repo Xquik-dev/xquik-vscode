@@ -106,7 +106,7 @@ local_sha=$(shasum -a 256 "$vsix" | cut -d ' ' -f 1)
 step "The package sha256 is $local_sha."
 
 step "Proving the package in $editor_app."
-node tests/editor/run.mjs "$vsix" "$editor_app" ||
+node tests/editor/run.mts "$vsix" "$editor_app" ||
 	stop "The editor proof failed. Read the result above, then retry."
 
 if $dry_run; then
