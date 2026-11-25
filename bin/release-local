@@ -147,14 +147,9 @@ case $(http_status "$version_url") in
 esac
 
 published_sha() {
-	local sha_url
-	sha_url=$(curl --fail --silent --location --max-time 30 "$version_url" |
-		node -e '
-			let input = "";
-			process.stdin.on("data", (chunk) => (input += chunk)).on("end", () => {
-				process.stdout.write(JSON.parse(input).files.sha256);
-			});
-		') || return 1
+	local listing sha_url
+	listing=$(curl --fail --silent --location --max-time 30 "$version_url") || return 1
+	sha_url=$(LISTING="$listing" node -e 'process.stdout.write(JSON.parse(process.env.LISTING).files.sha256)') || return 1
 	curl --fail --silent --location --max-time 30 "$sha_url"
 }
 
